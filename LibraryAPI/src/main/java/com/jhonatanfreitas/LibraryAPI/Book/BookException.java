@@ -1,7 +1,5 @@
 package com.jhonatanfreitas.LibraryAPI.Book;
 
-import javax.lang.model.type.ErrorType;
-
 public class BookException extends RuntimeException {
     private final ErrorType errorType;
 
@@ -16,7 +14,9 @@ public class BookException extends RuntimeException {
     public enum ErrorType{
         NOT_FOUND,
         NOT_RENTED,
-        ALREADY_RENTED
+        ALREADY_RENTED,
+        INVALID_DATA,
+        ALREADY_EXISTS
     }
 
     public BookException(String message, ErrorType errorType){

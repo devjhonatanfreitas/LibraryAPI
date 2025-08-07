@@ -2,7 +2,6 @@ package com.jhonatanfreitas.LibraryAPI.Book;
 
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Book;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,11 +16,19 @@ public class BookService {
 
     public BookModel addBook(BookModel book){
 
-        //TODO verify if ISBN is already present on list
-
-        if (book.getAvailability() == false){
-            book.setAvailability(true);
+        if (book.getIsbn() == null || book.getIsbn().trim().isEmpty()){
+            throw new BookException(
+                    "ISBN is required.",
+                    BookException.ErrorType.INVALID_DATA);
         }
+
+        if (bookRepository.existsByIsbn(book.getIsbn())){
+            throw new BookException(
+                    "Book with ISBN "+book.getIsbn()+"already exists",
+                    BookException.ErrorType.ALREADY_EXISTS);
+        }
+
+        book.setAvailability(true);
         return bookRepository.save(book);
     }
 
