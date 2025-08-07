@@ -2,6 +2,7 @@ package com.jhonatanfreitas.LibraryAPI.Book;
 
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Book;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,4 +49,37 @@ public class BookService {
         bookRepository.deleteById(id);
     }
 
+    public BookModel rentBook(Long id){
+
+        BookModel book = bookRepository.findById(id)
+                .orElseThrow(() -> new BookException(
+                        "Book with ID "+id+" not found",
+                        BookException.ErrorType.NOT_FOUND));
+
+        if (book.getAvailability() == false){
+            throw new BookException(
+                    "Book with ID"+id+" is not available",
+                    BookException.ErrorType.ALREADY_RENTED);
+        }
+        book.setAvailability(false);
+        return bookRepository.save(book);
+    }
+
+    public BookModel returnBook (Long id) {
+
+        BookModel book = bookRepository.findById(id)
+        .orElseThrow(() -> new BookException(
+                "Book with ID "+id+" not found",
+                BookException.ErrorType.NOT_FOUND));
+
+        if (book.getAvailability() == true){
+            throw new BookException(
+                    "Book with ID "+id+" is already available",
+                    BookException.ErrorType.NOT_RENTED);
+
+        }
+
+        book.setAvailability(true);
+        return bookRepository.save(book);
+    }
 }

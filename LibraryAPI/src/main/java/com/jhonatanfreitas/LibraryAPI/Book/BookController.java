@@ -43,7 +43,7 @@ public class BookController {
             return ResponseEntity.ok(book);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Livro com o ID "+id+" não consta em nossos registros.");
+                    .body("Book with ID "+id+" is not on our records.");
         }
     }
 
@@ -52,6 +52,36 @@ public class BookController {
         bookService.deleteBook(id);
     }
 
+    @PatchMapping("/rent/{id}")
+    public ResponseEntity<String> rentBook(@PathVariable Long id){
+        try {
+            BookModel rentedBook = bookService.rentBook(id);
+            return ResponseEntity.ok("The book " + rentedBook.getTitle() + " has been reserved.");
+        } catch (BookException e){
+            HttpStatus status = switch (e.getErrorType()){
+                case NOT_FOUND -> HttpStatus.NOT_FOUND;
+                case NOT_RENTED -> HttpStatus.BAD_REQUEST;
+                default -> HttpStatus.INTERNAL_SERVER_ERROR;
+            };
+            return ResponseEntity.status(status).body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/return/{id}")
+    public ResponseEntity<String> returnBook(@PathVariable Long id){
+        try {
+            BookModel returnedBook = bookService.returnBook(id);
+            return ResponseEntity.ok("The book " + returnedBook.getTitle() + " has been returned.");
+        } catch (BookException e){
+            HttpStatus status = switch (e.getErrorType()){
+                case NOT_FOUND -> HttpStatus.NOT_FOUND;
+                case NOT_RENTED -> HttpStatus.BAD_REQUEST;
+                default -> HttpStatus.INTERNAL_SERVER_ERROR;
+            };
+            return ResponseEntity.status(status).body(e.getMessage());
+        }
+
+    }
 }
 
 
