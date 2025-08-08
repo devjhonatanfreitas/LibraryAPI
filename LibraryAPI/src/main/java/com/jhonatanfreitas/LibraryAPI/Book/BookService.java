@@ -22,7 +22,7 @@ public class BookService {
                     BookException.ErrorType.INVALID_DATA);
         }
 
-        if (bookRepository.existsByIsbn(book.getIsbn())){
+        if (bookRepository.existsByIsbnContainingIgnoreCase(book.getIsbn())){
             throw new BookException(
                     "Book with ISBN "+book.getIsbn()+"already exists",
                     BookException.ErrorType.ALREADY_EXISTS);
@@ -33,8 +33,6 @@ public class BookService {
     }
 
     public List<BookModel> getAllBooks(){
-
-        //TODO sort by title, publication date, author
 
         return bookRepository.findAll();
     }
@@ -89,4 +87,22 @@ public class BookService {
         book.setAvailability(true);
         return bookRepository.save(book);
     }
+
+    public List<BookModel> findByTitleContainingIgnoreCase(String title){
+        return bookRepository.findByTitleContainingIgnoreCase(title);
+    }
+
+    public List<BookModel> findByGenreContainingIgnoreCase(String genre){
+        return bookRepository.findByGenreContainingIgnoreCase(genre);
+    }
+
+    public List<BookModel> findByAuthorContainingIgnoreCase(String author){
+        return bookRepository.findByAuthorContainingIgnoreCase(author);
+    }
+
+    public List<BookModel> findByIsbn(String isbn){
+        return bookRepository.findByIsbn(isbn);
+    }
+
+
 }

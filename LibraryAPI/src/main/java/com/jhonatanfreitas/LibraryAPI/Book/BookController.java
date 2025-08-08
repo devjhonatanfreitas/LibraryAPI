@@ -30,7 +30,7 @@ public class BookController {
         return ResponseEntity.ok(allBooks);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/book/{id}")
     public ResponseEntity <BookModel> getBookById(@PathVariable Long id){
         BookModel book = bookService.getBookById(id);
         return ResponseEntity.ok(book);
@@ -80,6 +80,26 @@ public class BookController {
                 default -> HttpStatus.INTERNAL_SERVER_ERROR;
             };
             return ResponseEntity.status(status).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/search")
+    public List<BookModel> search(@RequestParam String type, @RequestParam String q){
+        if (q == null || q.trim().isEmpty()){
+            throw new BookException("Search params cannot be empty", BookException.ErrorType.INVALID_DATA);
+        }
+        switch (type.toLowerCase()){
+            case "title":
+                return bookService.findByTitleContainingIgnoreCase(q);
+            case "author":
+                return bookService.findByAuthorContainingIgnoreCase(q);
+            case "genre":
+                return bookService.findByGenreContainingIgnoreCase(q);
+            case "isbn":
+                return bookService.findByIsbn(q);
+            default:
+                throw new BookException("Searching type is not valid: "+type+". Try to use author, genre, title or isbn",
+                        BookException.ErrorType.INVALID_DATA);
         }
 
     }

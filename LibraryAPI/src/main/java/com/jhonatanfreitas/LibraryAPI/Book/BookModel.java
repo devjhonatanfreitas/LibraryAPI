@@ -23,7 +23,7 @@ public class BookModel {
     private String title;
 
     @Column(name = "author")
-    private String autor;
+    private String author;
 
     @Column(name = "ISBN")
     private String isbn;
@@ -58,12 +58,12 @@ public class BookModel {
         this.title = title;
     }
 
-    public String getAutor() {
-        return autor;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setAutor(String autor) {
-        this.autor = autor;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getIsbn() {
